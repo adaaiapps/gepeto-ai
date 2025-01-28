@@ -1,0 +1,6 @@
+python-dotenv
+langchain
+openai
+anthropic
+google-generativeai
+deepseek-ai
