@@ -11,16 +11,16 @@ module.exports = {
         ],
       },
     },
-    // Mengaktifkan virtual environment dan menginstal dependensi
+    // Mengaktifkan virtual environment dan menginstal dependensi menggunakan uv pip
     {
       method: "shell.run",
       params: {
         venv: "env",
         path: "gepeto_ai",
         message: [
-          "pip install --upgrade pip", 
-          "pip install -r requirements.txt", 
-          "pip install python-dotenv"
+          "uv pip install --upgrade pip", 
+          "uv pip install -r requirements.txt", 
+          "uv pip install python-dotenv"
         ],
       },
     },
