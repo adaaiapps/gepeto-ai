@@ -4,7 +4,7 @@ module.exports = {
       method: "shell.run",
       params: {
         message: [
-          "git clone https://github.com/pinokiocomputer/gepeto app",
+          "git clone https://github.com/adaaiapps/gepeto-ai.git app",
         ]
       }
     },
@@ -13,7 +13,7 @@ module.exports = {
       params: {
         venv: "env",
         venv_python: "3.10",
-        path: "app",
+        path: "app/gepeto_ai",
         message: [
           "uv pip install -r requirements.txt",
         ],
