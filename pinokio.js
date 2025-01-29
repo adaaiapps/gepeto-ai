@@ -1,61 +1,33 @@
 const path = require('path')
 module.exports = {
   version: "2.0",
-  title: "Gepeto AI",
-  description: "AI-powered app launcher generator for Pinokio.",
+  title: "gepeto",
+  description: "Generate Pinokio Launchers, Instantly. https://gepeto.pinokio.computer",
   icon: "icon.jpeg",
   menu: async (kernel, info) => {
-    let running = {
-      start: info.running("start.js"),
-      update: info.running("update.js"),
-      reset: info.running("reset.js")
-    }
-    if (running.start) {
-      let local = info.local("start.js")
-      if (local && local.url) {
-        return [{
-          icon: "fa-solid fa-rocket",
-          text: "Open Web UI",
-          href: local.url,
-        }, {
-          icon: 'fa-solid fa-terminal',
-          text: "Terminal",
-          href: "start.js",
-        }]
-      } else {
-        return [{
-          icon: 'fa-solid fa-terminal',
-          text: "Terminal",
-          href: "start.js",
-        }]
-      }
-    } else if (running.update) {
+    let running = info.running("start.js")
+    if (running) {
+      // display html button
+      // display start.js button
       return [{
-        default: true,
+        icon: "fa-solid fa-rocket",
+        text: "Gepeto",
+        href: "index.html?raw=true"
+      }, {
         icon: 'fa-solid fa-terminal',
-        text: "Updating",
-        href: "update.js",
-      }]
-    } else if (running.reset) {
-      return [{
-        default: true,
-        icon: 'fa-solid fa-terminal',
-        text: "Resetting",
-        href: "reset.js",
+        text: "Terminal",
+        href: "start.js",
       }]
     } else {
+      // display html button
       return [{
-        icon: "fa-solid fa-power-off",
-        text: "Start",
-        href: "start.js",
+        icon: "fa-solid fa-rocket",
+        text: "Gepeto",
+        href: "index.html?raw=true"
       }, {
         icon: "fa-solid fa-plug",
         text: "Update",
-        href: "update.js",
-      }, {
-        icon: "fa-regular fa-circle-xmark",
-        text: "Reset",
-        href: "reset.js",
+        href: "update.js"
       }]
     }
   }
