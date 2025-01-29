@@ -2,7 +2,8 @@ import os
 import json
 import subprocess
 from dotenv import load_dotenv
-from langchain.chat_models import ChatOpenAI, ChatAnthropic, ChatGooglePalm, ChatDeepseek
+from langchain_community.chat_models import ChatOpenAI, ChatAnthropic, ChatGooglePalm
+from langchain_community.chat_models import ChatDeepseek
 from langchain.prompts import ChatPromptTemplate
 from langchain.schema import BaseOutputParser
 
@@ -43,6 +44,13 @@ def analyze_repo(repo_url):
             with open(package_path, "r", encoding="utf-8") as f:
                 package_content = f.read()
 
+        # Read documentation file
+        docs_path = os.path.join(os.path.dirname(__file__), "ada_docs.md")
+        docs_content = ""
+        if os.path.exists(docs_path):
+            with open(docs_path, "r", encoding="utf-8") as f:
+                docs_content = f.read()
+
         # Choose LLM based on environment variables
         llm_type = os.getenv("LLM_TYPE", "openai")
         if llm_type == "openai":
@@ -73,8 +81,9 @@ def analyze_repo(repo_url):
             raise ValueError(f"Invalid LLM type: {llm_type}")
 
         prompt = ChatPromptTemplate.from_messages([
-            ("system", """
+            ("system", f"""
                 You are an expert in analyzing GitHub repositories and generating Pinokio scripts.
+                {docs_content}
                 Analyze the provided repository information and extract the following:
                 - Programming language (e.g., Python, Node.js, etc.)
                 - Dependencies (e.g., pip packages, npm packages)
