@@ -4,8 +4,7 @@ module.exports = {
       method: "shell.run",
       params: {
         message: [
-          "if exist gepeto_ai (rmdir /s /q gepeto_ai)",
-          "git clone https://github.com/pinokiocomputer/gepeto gepeto_ai",
+          "git clone https://github.com/pinokiocomputer/gepeto app",
         ]
       }
     },
@@ -14,12 +13,17 @@ module.exports = {
       params: {
         venv: "env",
         venv_python: "3.10",
-        path: "gepeto_ai",
+        path: "app",
         message: [
-          "if exist env (rmdir /s /q env)",
-          "pip install -r requirements.txt",
+          "uv pip install -r requirements.txt",
         ],
       },
+    },
+    {
+      method: "fs.link",
+      params: {
+        venv: "app/env"
+      }
     },
     {
       method: "notify",
