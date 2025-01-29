@@ -11,7 +11,7 @@ module.exports = {
     {
       method: "shell.run",
       params: {
-        venv: "../env",
+        venv: "app/env",
         venv_python: "3.10",
         path: "app/gepeto_ai",
         message: [
@@ -22,7 +22,7 @@ module.exports = {
     {
       method: "fs.link",
       params: {
-        venv: "../env"
+        venv: "app/env"
       }
     },
     {
