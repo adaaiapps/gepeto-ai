@@ -20,7 +20,8 @@ module.exports = {
         message: [
           "uv pip install --upgrade pip", 
           "uv pip install -r requirements.txt", 
-          "uv pip install python-dotenv"
+          "uv pip install python-dotenv", 
+          "uv pip install langchain_community"
         ],
       },
     },
