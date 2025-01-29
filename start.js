@@ -19,9 +19,9 @@ module.exports = {
         path: "gepeto_ai",
         message: [
           "uv pip install --upgrade pip", 
-          "uv pip install langchain_community deepseek-ai", 
+          "uv pip install python-dotenv langchain_community deepseek-ai", 
           "uv pip install -r requirements.txt", 
-          "uv pip check"  // Mengecek apakah semua dependensi terinstal dengan benar
+          "python -m pip check"  // Mengecek apakah semua dependensi terinstal dengan benar
         ],
       },
     },
