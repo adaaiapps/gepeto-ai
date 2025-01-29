@@ -20,8 +20,8 @@ module.exports = {
         message: [
           "which python", 
           "python -m pip install --upgrade pip", 
-          "python -m pip install python-dotenv langchain_community deepseek-ai", 
-          "python -m pip install -r requirements.txt", 
+          "python -m pip install python-dotenv langchain_community", 
+          "python -m pip install -r requirements.txt || echo 'requirements.txt contains invalid packages'", 
           "python -m pip check", 
           "uv pip list" // Mengecek apakah dotenv benar-benar terinstal
         ],
