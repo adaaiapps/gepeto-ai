@@ -11,7 +11,7 @@ module.exports = {
         ],
       },
     },
-    // Mengaktifkan virtual environment dan menginstal dependensi menggunakan uv pip
+    // Memperbarui pip dan menginstal dependensi utama secara eksplisit
     {
       method: "shell.run",
       params: {
@@ -19,9 +19,9 @@ module.exports = {
         path: "gepeto_ai",
         message: [
           "uv pip install --upgrade pip", 
-          "uv pip install --upgrade langchain_community deepseek-ai", 
+          "uv pip install langchain_community deepseek-ai", 
           "uv pip install -r requirements.txt", 
-          "uv pip install python-dotenv"
+          "uv pip check"  // Mengecek apakah semua dependensi terinstal dengan benar
         ],
       },
     },
@@ -32,6 +32,7 @@ module.exports = {
         venv: "env",
         path: "gepeto_ai",
         message: [
+          "python -m pip check",  // Verifikasi terakhir sebelum eksekusi
           "python gepeto_ai.py"
         ],
       },
