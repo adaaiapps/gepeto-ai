@@ -17,7 +17,7 @@ module.exports = {
         venv: "env",
         path: "gepeto_ai",
         message: [
-          "python gepeto_ai.py",
+          "python gepeto_ai.py"
         ],
       },
     },
