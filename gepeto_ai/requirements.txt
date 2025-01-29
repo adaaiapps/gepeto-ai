@@ -3,3 +3,4 @@ langchain
 openai
 anthropic
 langchain-community
+deepseek-ai
