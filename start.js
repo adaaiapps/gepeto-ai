@@ -30,8 +30,7 @@ module.exports = {
       params: {
         path: ".", // Direktori utama proyek
         message: [
-          "source env/bin/activate" // Untuk Unix/Linux/MacOS
-          // "env\\Scripts\\activate" // Untuk Windows
+          "env\\Scripts\\activate" // Untuk Windows
         ],
       },
     },
