@@ -212,10 +212,9 @@ module.exports = {{
   "run": [ {{
     "method": "script.start",
     "params": {{ "uri": "start.js" }}
-  }},
+  }}],
   "title": "{app_name}",
   "icon": "{icon_url if icon_url else 'icon.png'}"
-  ]
 }}
 """
                 with open(os.path.join(app_folder, "pinokio.js"), "w") as f:
