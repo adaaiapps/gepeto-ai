@@ -1,9 +1,8 @@
-import os
+import os 
 import json
 import subprocess
 from dotenv import load_dotenv
 from langchain_community.chat_models import ChatOpenAI, ChatAnthropic, ChatGooglePalm
-from langchain_community.chat_models import ChatDeepseek
 from langchain.prompts import ChatPromptTemplate
 from langchain.schema import BaseOutputParser
 
@@ -69,12 +68,6 @@ def analyze_repo(repo_url):
             llm = ChatGooglePalm(
                 google_api_key=os.getenv("GOOGLE_API_KEY"),
                 model="models/text-bison-001",
-                temperature=0.2,
-            )
-        elif llm_type == "deepseek":
-            llm = ChatDeepseek(
-                deepseek_api_key=os.getenv("DEEPSEEK_API_KEY"),
-                model="deepseek-chat",
                 temperature=0.2,
             )
         else:
