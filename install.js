@@ -1,5 +1,14 @@
 module.exports = {
     run: [
+      // Edit this step to customize the git repository to use
+      {
+        method: "shell.run",
+        params: {
+          message: [
+            "git clone {{env.GIT_URL}} app",
+          ]
+        }
+      },
       // Edit this step with your custom install commands
       {
         method: "shell.run",
