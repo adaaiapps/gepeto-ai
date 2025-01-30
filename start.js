@@ -48,5 +48,14 @@ module.exports = {
         }
       },
     },
+    // Langkah 2: Start the generated app
+    {
+      method: "shell.run",
+      params: {
+        message: [
+          `node ${path.join(PINOKIO_HOME, 'api', PROJECT_NAME ? PROJECT_NAME : 'generated_app', 'pinokio.js')}`
+        ],
+      }
+    }
   ],
 };
