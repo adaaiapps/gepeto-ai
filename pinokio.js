@@ -5,7 +5,7 @@ module.exports = {
   description: "Generate Pinokio Launchers, Instantly. https://gepeto.pinokio.computer",
   icon: "icon.jpeg",
   menu: async (kernel, info) => {
-    let installed = info.exists("app/env")
+    let installed = info.exists("./env")
     if (installed) {
       return [{
         icon: "fa-solid fa-power-off",
