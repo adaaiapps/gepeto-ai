@@ -165,15 +165,15 @@ def main():
     llm_type = env_vars.get("LLM_TYPE")
     
     if not git_url:
-        print("GIT_URL tidak ditemukan di file ENVIRONMENT. Pastikan untuk menyetel variabel lingkungan sebelum menjalankan script.")
+        print("Error: GIT_URL is not defined in ENVIRONMENT file. Please set the variable before running the script.")
         return
 
     if not api_key:
-        print("API_KEY tidak ditemukan di file ENVIRONMENT. Pastikan untuk menyetel variabel lingkungan sebelum menjalankan script.")
+        print("Error: API_KEY is not defined in ENVIRONMENT file. Please set the variable before running the script.")
         return
 
     if not llm_type:
-        print("LLM_TYPE tidak ditemukan di file ENVIRONMENT. Pastikan untuk menyetel variabel lingkungan sebelum menjalankan script.")
+        print("Error: LLM_TYPE is not defined in ENVIRONMENT file. Please set the variable before running the script.")
         return
 
     try:

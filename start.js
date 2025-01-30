@@ -14,17 +14,6 @@ module.exports = {
         ],
       },
     },
-    // Memeriksa apakah variabel lingkungan yang diperlukan sudah terdefinisi
-    {
-      method: "shell.run",
-      params: {
-        message: [
-          "if [ -z \"$GIT_URL\" ]; then echo 'Error: GIT_URL is not defined' && exit 1; fi",
-          "if [ -z \"$API_KEY\" ]; then echo 'Error: API_KEY is not defined' && exit 1; fi",
-          "if [ -z \"$LLM_TYPE\" ]; then echo 'Error: LLM_TYPE is not defined' && exit 1; fi",
-        ],
-      },
-    },
     // Membuat virtual environment jika belum ada
     {
       method: "shell.run",
