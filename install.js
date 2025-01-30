@@ -4,19 +4,12 @@ module.exports = {
     {
       method: "shell.run",
       params: {
-        venv: "env",                // Edit this to customize the venv folder path
-        path: "app",                // Edit this to customize the path to start the shell from
+        venv: "env",
+        venv_python: "3.11",
+        path: ".",  // Atur ke current directory (root folder)
         message: [
-          "cd app",
-          "uv pip install -r requirements.txt"
+          "pip install -r requirements.txt"
         ]
-      }
-    },
-    {
-      method: "shell.run",
-      params: {
-        path: "app/ui",
-        message: "npm install"
       }
     },
     //  Uncomment this step to add automatic venv deduplication (Experimental)
