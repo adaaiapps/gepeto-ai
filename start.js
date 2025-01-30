@@ -5,6 +5,26 @@ const fs = require('fs');
 module.exports = {
   daemon: true,
   run: [
+    // Membaca variabel lingkungan dari file _ENVIRONMENT
+    {
+      method: "shell.run",
+      params: {
+        message: [
+          "source _ENVIRONMENT"
+        ],
+      },
+    },
+    // Memeriksa apakah variabel lingkungan yang diperlukan sudah terdefinisi
+    {
+      method: "shell.run",
+      params: {
+        message: [
+          "if [ -z \"$GIT_URL\" ]; then echo 'Error: GIT_URL is not defined' && exit 1; fi",
+          "if [ -z \"$API_KEY\" ]; then echo 'Error: API_KEY is not defined' && exit 1; fi",
+          "if [ -z \"$LLM_TYPE\" ]; then echo 'Error: LLM_TYPE is not defined' && exit 1; fi",
+        ],
+      },
+    },
     // Membuat virtual environment jika belum ada
     {
       method: "shell.run",
@@ -12,19 +32,6 @@ module.exports = {
         path: ".", // Direktori utama proyek
         message: [
           "python -m venv env"
-        ],
-      },
-    },
-    // Mengecek dan membuat file _ENVIRONMENT jika belum ada
-    {
-      method: "shell.run",
-      params: {
-        path: ".", // Direktori utama proyek
-        message: [
-          "echo GIT_URL=your_repository_url > _ENVIRONMENT",
-          "echo API_KEY=your_api_key >> _ENVIRONMENT",
-          "echo LLM_TYPE=openai >> _ENVIRONMENT", // (opsional, default: openai)
-          "echo PINOKIO_HOME=/path/to/pinokio/home >> _ENVIRONMENT", // (opsional, default: /PINOKIO_HOME)
         ],
       },
     },

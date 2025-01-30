@@ -151,9 +151,19 @@ def generate_pinokio_scripts(repo_data):
 def main():
     config = load_config()
     git_url = os.getenv("GIT_URL")
+    api_key = os.getenv("API_KEY")
+    llm_type = os.getenv("LLM_TYPE")
     
     if not git_url:
         print("GIT_URL tidak ditemukan di variabel lingkungan. Pastikan untuk menyetel variabel lingkungan sebelum menjalankan script.")
+        return
+
+    if not api_key:
+        print("API_KEY tidak ditemukan di variabel lingkungan. Pastikan untuk menyetel variabel lingkungan sebelum menjalankan script.")
+        return
+
+    if not llm_type:
+        print("LLM_TYPE tidak ditemukan di variabel lingkungan. Pastikan untuk menyetel variabel lingkungan sebelum menjalankan script.")
         return
 
     try:

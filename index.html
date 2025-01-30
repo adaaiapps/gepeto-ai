@@ -81,7 +81,31 @@ document.querySelector("form").addEventListener("submit", async (e) => {
   params.set("api_key", document.querySelector("#api_key").value);
   params.set("llm_type", document.querySelector("#llm_type").value);
 
-  location.href = "start.js?" + params.toString();
+  // Fetch the existing _ENVIRONMENT content
+  const response = await fetch("_ENVIRONMENT");
+  let envContent = "";
+  if (response.ok) {
+    envContent = await response.text();
+  }
+
+  // Update or add the new values to the _ENVIRONMENT content
+  let newEnvContent = envContent;
+  params.forEach((value, key) => {
+    const regex = new RegExp(`^${key}=.*$`, 'm');
+    if (regex.test(newEnvContent)) {
+      newEnvContent = newEnvContent.replace(regex, `${key}=${value}`);
+    } else {
+      newEnvContent += `\n${key}=${value}`;
+    }
+  });
+
+  // Write the updated content back to _ENVIRONMENT
+  await fetch("_ENVIRONMENT", {
+    method: "PUT",
+    body: newEnvContent,
+  });
+
+  location.href = "start.js";
 });
 </script>
 </body>
