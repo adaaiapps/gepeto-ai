@@ -52,25 +52,37 @@ form button {
   <input type="text" placeholder='Git URL' id='git' />
 </div>
 <div class='item'>
+  <label>LLM API Key (OpenAI / Anthropic / Google)</label>
+  <input type="text" placeholder="Enter your API key" id="api_key" />
+</div>
+<div class='item'>
+  <label>LLM Type (openai / anthropic / google)</label>
+  <input type="text" placeholder="LLM Type" id="llm_type" />
+</div>
+<div class='item'>
   <button>Submit</button>
 </div>
 </form>
 <script>
 document.querySelector("form").addEventListener("submit", async (e) => {
-  e.preventDefault()
-  e.stopPropagation()
-  let name = document.querySelector("#name").value
+  e.preventDefault();
+  e.stopPropagation();
+
+  let name = document.querySelector("#name").value;
   if (/\s/.test(name)) {
-    alert("The name must not contain spaces")
-    return
+    alert("The name must not contain spaces");
+    return;
   }
 
-  let params = new URLSearchParams()
-  params.set("name", document.querySelector("#name").value)
-  params.set("git", document.querySelector("#git").value)
-  params.set("icon", document.querySelector("#icon").value)
-  location.href = "start.js?" + params.toString()
-})
+  let params = new URLSearchParams();
+  params.set("name", document.querySelector("#name").value);
+  params.set("git", document.querySelector("#git").value);
+  params.set("icon", document.querySelector("#icon").value);
+  params.set("api_key", document.querySelector("#api_key").value);
+  params.set("llm_type", document.querySelector("#llm_type").value);
+
+  location.href = "start.js?" + params.toString();
+});
 </script>
 </body>
 </html>

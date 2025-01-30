@@ -6,6 +6,7 @@ from langchain_community.chat_models import ChatOpenAI, ChatAnthropic, ChatGoogl
 from langchain.prompts import ChatPromptTemplate
 from langchain.schema import BaseOutputParser
 
+# Memuat variabel lingkungan dari .env
 load_dotenv()
 
 class JsonOutputParser(BaseOutputParser):
@@ -43,6 +44,12 @@ def analyze_repo(repo_url):
             with open(package_path, "r", encoding="utf-8") as f:
                 package_content = f.read()
 
+        # Tentukan file config.json untuk menyimpan URL secara permanen
+        config_path = os.path.join(os.getcwd(), "config.json")
+        config_data = {"last_repo_url": repo_url}
+        with open(config_path, "w") as f:
+            json.dump(config_data, f, indent=4)
+
         # Read documentation file
         docs_path = os.path.join(os.path.dirname(__file__), "ada_docs.md")
         docs_content = ""
@@ -50,7 +57,7 @@ def analyze_repo(repo_url):
             with open(docs_path, "r", encoding="utf-8") as f:
                 docs_content = f.read()
 
-        # Choose LLM based on environment variables
+        # Pilih model LLM berdasarkan .env
         llm_type = os.getenv("LLM_TYPE", "openai")
         if llm_type == "openai":
             llm = ChatOpenAI(
@@ -73,7 +80,7 @@ def analyze_repo(repo_url):
         else:
             raise ValueError(f"Invalid LLM type: {llm_type}")
 
-        prompt = ChatPromptTemplate.from_messages([
+        prompt = ChatPromptTemplate.from_messages([ 
             ("system", f"""
                 You are an expert in analyzing GitHub repositories and generating Pinokio scripts.
                 {docs_content}
@@ -111,23 +118,17 @@ def generate_pinokio_scripts(repo_data):
         language = repo_data.get("language", "unknown")
         dependencies = repo_data.get("dependencies", [])
         run_command = repo_data.get("command", "")
-        special_instructions = repo_data.get("special_instructions", "")
-        use_torch = "torch" in dependencies or "pytorch" in dependencies
-        use_link = True # You can add logic to detect if link is needed
         repo_name = repo_data.get("repo_name", "app")
         repo_url = repo_data.get("repo_url", "")
 
-        template_dir = "template1" if not use_torch else "template2"
+        template_dir = "template1" if "torch" not in dependencies else "template2"
 
         install_script = open(f"{template_dir}/install.js", "r").read()
         start_script = open(f"{template_dir}/start.js", "r").read()
-        update_script = open(f"{template_dir}/update.js", "r").read()
-        reset_script = open(f"{template_dir}/reset.js", "r").read()
         pinokio_script = open(f"{template_dir}/pinokio.js", "r").read()
 
         install_script = install_script.replace("<GIT_REPOSITORY>", repo_url)
         install_script = install_script.replace("<INSTALL_FILE>", "requirements.txt" if language == "Python" else "package.json")
-
         start_script = start_script.replace("<START_FILE>", run_command)
 
         pinokio_script = pinokio_script.replace("<TITLE>", repo_name)
@@ -136,18 +137,8 @@ def generate_pinokio_scripts(repo_data):
         scripts = {
             "install.js": install_script,
             "start.js": start_script,
-            "update.js": update_script,
-            "reset.js": reset_script,
             "pinokio.js": pinokio_script,
         }
-
-        if use_torch:
-            scripts["torch.js"] = open("template2/torch.js", "r").read()
-        if use_link:
-            scripts["link.js"] = open("template2/link.js", "r").read()
-        if template_dir == "template2":
-            scripts["app.py"] = open("template2/app.py", "r").read()
-            scripts["requirements.txt"] = open("template2/requirements.txt", "r").read()
 
         return scripts
     except Exception as e:

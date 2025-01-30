@@ -32,18 +32,15 @@ def main():
                     print("\nPerhatian: Tidak ada file pinokio.js yang dihasilkan. Menambahkan file pinokio.js default...")
                     default_pinokio_js = """
 module.exports = {
-  "run": [{
+  "run": [ {
     "method": "script.start",
-    "params": {
-      "uri": "start.js"
-    }
+    "params": { "uri": "start.js" }
   }]
 }
 """
                     with open(os.path.join(app_folder, "pinokio.js"), "w") as f:
                         f.write(default_pinokio_js)
                     print("File pinokio.js default telah ditambahkan.")
-
             except Exception as e:
                 print(f"Terjadi kesalahan saat membuat skrip Pinokio: {e}")
         else:
