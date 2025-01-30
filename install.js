@@ -1,3 +1,5 @@
+const { EventEmitter } = require('events');
+
 module.exports = {
   run: [
     // Edit this step with your custom install commands
@@ -22,8 +24,10 @@ module.exports = {
     {
       method: "notify",
       params: {
-        html: "Click the 'start' tab to get started!"
+        html: "Instalasi selesai! Klik tombol 'Start' untuk memulai."
       }
     }
-  ]
-}
+  ],
+  // Event emitter untuk memberikan sinyal bahwa instalasi selesai
+  emitter: new EventEmitter()
+};
