@@ -1,3 +1,7 @@
+const { exec } = require('child_process');
+const path = require('path');
+const fs = require('fs');
+
 module.exports = {
   daemon: true,
   run: [
@@ -11,34 +15,46 @@ module.exports = {
         ],
       },
     },
-    // Mengaktifkan virtual environment dan menambahkan API Key ke file .env
+    // Mengecek dan membuat file _ENVIRONMENT jika belum ada
     {
       method: "shell.run",
       params: {
         path: ".", // Direktori utama proyek
         message: [
-          "echo API_KEY={{api_key}} >> .env",
-          "echo LLM_TYPE={{llm_type}} >> .env",
+          "echo GIT_URL=your_repository_url > _ENVIRONMENT",
+          "echo API_KEY=your_api_key >> _ENVIRONMENT",
+          "echo LLM_TYPE=openai >> _ENVIRONMENT", // (opsional, default: openai)
+          "echo PINOKIO_HOME=/path/to/pinokio/home >> _ENVIRONMENT", // (opsional, default: /PINOKIO_HOME)
         ],
       },
     },
-    // Menginstal dependensi dan menjalankan aplikasi
+    // Mengaktifkan virtual environment
     {
       method: "shell.run",
       params: {
-        venv: "env", // Virtual environment yang dibuat di direktori utama
-        path: ".", // Direktori utama
+        path: ".", // Direktori utama proyek
+        message: [
+          "source env/bin/activate" // Untuk Unix/Linux/MacOS
+          // "env\\Scripts\\activate" // Untuk Windows
+        ],
+      },
+    },
+    // Menginstal dependensi
+    {
+      method: "shell.run",
+      params: {
+        path: ".", // Direktori utama proyek
         message: [
           "python -m pip install --upgrade pip",
           "python -m pip install -r requirements.txt",
         ],
       },
     },
+    // Menjalankan script Python
     {
       method: "shell.run",
       params: {
-        venv: "env",
-        path: ".",
+        path: ".", // Direktori utama proyek
         message: "python gepeto_ai.py",
       },
     },

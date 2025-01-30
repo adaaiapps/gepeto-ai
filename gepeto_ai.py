@@ -1,13 +1,9 @@
 import os
 import json
 import subprocess
-from dotenv import load_dotenv
 from langchain_community.chat_models import ChatOpenAI, ChatAnthropic, ChatGooglePalm
 from langchain.prompts import ChatPromptTemplate
 from langchain.schema import BaseOutputParser
-
-# Load environment variables from .env file
-load_dotenv()
 
 # Nama file konfigurasi
 CONFIG_FILE = "config.json"
@@ -63,14 +59,9 @@ def analyze_repo(repo_url):
             with open(docs_path, "r", encoding="utf-8") as f:
                 docs_content = f.read()
 
-        # Pilih model LLM berdasarkan .env
+        # Pilih model LLM berdasarkan variabel lingkungan Pinokio
         llm_type = os.getenv("LLM_TYPE", "openai")
         api_key = os.getenv("API_KEY")
-
-        if not api_key:
-            raise ValueError("API_KEY tidak ditemukan di .env")
-        if not llm_type:
-            raise ValueError("LLM_TYPE tidak ditemukan di .env")
 
         if llm_type == "openai":
             llm = ChatOpenAI(
@@ -111,7 +102,7 @@ def analyze_repo(repo_url):
                 package.json: {package_content}
             """)
         ])
-        chain = prompt | llm | BaseOutputParser()
+        chain = prompt | llm | JsonOutputParser()
         result = chain.invoke({
             "repo_url": repo_url,
             "readme_content": readme_content,
@@ -159,13 +150,11 @@ def generate_pinokio_scripts(repo_data):
 
 def main():
     config = load_config()
-    if "git_url" not in config:
-        git_url = input("Masukkan URI repositori GitHub: ")
-        config["git_url"] = git_url
-        save_config(config)
-    else:
-        print(f"Git URL yang digunakan: {config['git_url']}")
-        git_url = config["git_url"]
+    git_url = os.getenv("GIT_URL")
+    
+    if not git_url:
+        print("GIT_URL tidak ditemukan di variabel lingkungan. Pastikan untuk menyetel variabel lingkungan sebelum menjalankan script.")
+        return
 
     try:
         repo_data = analyze_repo(git_url)
