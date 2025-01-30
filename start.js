@@ -1,53 +1,52 @@
+const { exec } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+
+// Baca file ENVIRONMENT
+const env = fs.readFileSync('ENVIRONMENT', 'utf8');
+const envLines = env.split('\n');
+
+// Pilih variabel yang dibutuhkan
+let GIT_URL = '';
+let API_KEY = '';
+let LLM_TYPE = 'openai';
+let PINOKIO_HOME = '/PINOKIO_HOME';
+let PROJECT_NAME = '';
+let ICON_URL = '';
+
+envLines.forEach(line => {
+  if (line.startsWith('GIT_URL=')) {
+    GIT_URL = line.replace('GIT_URL=', '').trim();
+  } else if (line.startsWith('API_KEY=')) {
+    API_KEY = line.replace('API_KEY=', '').trim();
+  } else if (line.startsWith('LLM_TYPE=')) {
+    LLM_TYPE = line.replace('LLM_TYPE=', '').trim();
+  } else if (line.startsWith('PINOKIO_HOME=')) {
+    PINOKIO_HOME = line.replace('PINOKIO_HOME=', '').trim();
+  } else if (line.startsWith('PROJECT_NAME=')) {
+    PROJECT_NAME = line.replace('PROJECT_NAME=', '').trim();
+  } else if (line.startsWith('ICON_URL=')) {
+    ICON_URL = line.replace('ICON_URL=', '').trim();
+  }
+});
 
 module.exports = {
   daemon: true,
   run: [
-    // Langkah 1: Cari file python utama
+    // Langkah 1: Jalankan script Python
     {
       method: "shell.run",
       params: {
-        message: [
-          "ls app"
-        ],
+        message: `python gepeto_ai.py`,
+        env: {
+          GIT_URL: GIT_URL,
+          API_KEY: API_KEY,
+          LLM_TYPE: LLM_TYPE,
+          PINOKIO_HOME: PINOKIO_HOME,
+          PROJECT_NAME: PROJECT_NAME,
+          ICON_URL: ICON_URL
+        }
       },
-    },
-    {
-      method: "local.set",
-      params: {
-        main_py: "{{input.stdout.split('\\n').find(file => file.endsWith('.py')) || 'app.py'}}"
-      }
-    },
-    // Langkah 2: Jalankan backend
-    {
-      method: "shell.run",
-      params: {
-        message: [
-          "python {{local.main_py}}",
-        ],
-        path: "app",
-        on: [{
-          "event": "/Devika is up and running/i",
-          "done": true
-        }]
-      }
-    },
-    // Langkah 3: Jalankan frontend
-    {
-      method: "shell.run",
-      params: {
-        path: "app/ui",
-        message: "npm run start",
-        on: [{ "event": "/http:\/\/\\S+/", "done": true }]
-      }
-    },
-    // Langkah 4: Setel variabel lokal 'url'
-    {
-      method: "local.set",
-      params: {
-        url: "{{input.event[0]}}"
-      }
     },
   ],
 };
