@@ -35,23 +35,11 @@ module.exports = {
         }];
       } else {
         // Jika sudah terinstall tapi belum start, mulai proses start
-        try {
-          // Jalankan start.js setelah instalasi selesai
-          const startProcess = await kernel.run("start.js");
-          return [{
-            default: true,
-            icon: 'fa-solid fa-terminal',
-            text: "Terminal",
+        return [{
+            icon: "fa-solid fa-power-off",
+            text: "Start",
             href: "start.js",
           }];
-        } catch (error) {
-          console.error("Gagal memulai proses start:", error);
-          return [{
-            default: true,
-            icon: 'fa-solid fa-exclamation-circle',
-            text: "Error: Gagal memulai proses",
-          }];
-        }
       }
     } else {
       // Jika belum terinstall, tampilkan tombol install

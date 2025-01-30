@@ -52,7 +52,7 @@ module.exports = {
      {
       method: "script.start",
       params: {
-        uri: `${path.join(PINOKIO_HOME, 'api', PROJECT_NAME ? PROJECT_NAME : 'generated_app', 'install.js')}`
+        uri: `${path.join(PINOKIO_HOME, 'api', PROJECT_NAME ? PROJECT_NAME : 'generated_app', 'start.js')}`
       }
     },
     {
