@@ -16,30 +16,22 @@ module.exports = {
       start: info.running("start.js"),
     };
 
-    if (running.install) {
-      // Jika instalasi sedang berlangsung, tampilkan pesan instalasi
-      return [{
-        default: true,
-        icon: "fa-solid fa-plug",
-        text: "Installing",
-        href: "install.js",
-      }];
-    } else if (installed) {
+    if (installed) {
       if (running.start) {
         // Jika proses start sedang berlangsung, tampilkan terminal
         return [{
           default: true,
           icon: 'fa-solid fa-terminal',
-          text: "Terminal",
+          text: "Running",
           href: "start.js",
         }];
       } else {
-        // Jika sudah terinstall tapi belum start, mulai proses start
+        // Jika sudah terinstall tapi belum start, tampilkan tombol start
         return [{
-            icon: "fa-solid fa-power-off",
-            text: "Start",
-            href: "start.js",
-          }];
+          icon: "fa-solid fa-power-off",
+          text: "Start",
+          href: "start.js",
+        }];
       }
     } else {
       // Jika belum terinstall, tampilkan tombol install
