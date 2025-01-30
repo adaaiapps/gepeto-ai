@@ -15,10 +15,8 @@ class JsonOutputParser(BaseOutputParser):
             return None
 
 # Load file environment
-load_dotenv()
-
-# Ambil variabel lingkungan
 ENVIRONMENT_FILE = "_ENVIRONMENT"
+load_dotenv(ENVIRONMENT_FILE)  # Pastikan file ini terbaca
 
 def load_environment_variables():
     env_vars = {}
@@ -29,13 +27,15 @@ def load_environment_variables():
                 if line and not line.startswith("#") and "=" in line:
                     key, value = line.split("=", 1)
                     env_vars[key.strip()] = value.strip()
+                    os.environ[key.strip()] = value.strip()  # Tambahkan ke environment sistem
     return env_vars
 
 def analyze_repo(repo_url, api_key, llm_type):
     try:
-        # Clone repo
+        # Clone repo jika belum ada
         repo_name = repo_url.split("/")[-1].replace(".git", "")
-        subprocess.run(["git", "clone", repo_url, repo_name], check=True)
+        if not os.path.exists(repo_name):
+            subprocess.run(["git", "clone", repo_url, repo_name], check=True)
 
         repo_path = os.path.abspath(repo_name)
 
@@ -67,13 +67,13 @@ def analyze_repo(repo_url, api_key, llm_type):
             with open(docs_path, "r", encoding="utf-8") as f:
                 docs_content = f.read()
 
-        # Pilih model LLM
+        # Pilih model LLM berdasarkan tipe
         if llm_type == "openai":
-            llm = ChatOpenAI(api_key=api_key, model="gpt-4", temperature=0.2)
+            llm = ChatOpenAI(openai_api_key=api_key, model="gpt-4", temperature=0.2)
         elif llm_type == "anthropic":
-            llm = ChatAnthropic(api_key=api_key, model="claude-3-opus-20240229", temperature=0.2)
+            llm = ChatAnthropic(anthropic_api_key=api_key, model="claude-3-opus-20240229", temperature=0.2)
         elif llm_type == "google":
-            llm = ChatGoogleGenerativeAI(api_key=api_key, model="gemini-pro", temperature=0.2)
+            llm = ChatGoogleGenerativeAI(google_api_key=api_key, model="gemini-pro", temperature=0.2)
         else:
             raise ValueError(f"Jenis LLM tidak valid: {llm_type}")
 
