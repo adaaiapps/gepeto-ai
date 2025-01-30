@@ -17,13 +17,9 @@ module.exports = {
       params: {
         path: ".", // Direktori utama proyek
         message: [
-          "echo API_KEY=<api_key> >> .env",
-          "echo LLM_TYPE=<llm_type> >> .env",
+          "echo API_KEY={{api_key}} >> .env",
+          "echo LLM_TYPE={{llm_type}} >> .env",
         ],
-        replace: {
-          "<api_key>": "{{api_key}}",
-          "<llm_type>": "{{llm_type}}",
-        },
       },
     },
     // Menginstal dependensi dan menjalankan aplikasi
@@ -33,10 +29,17 @@ module.exports = {
         venv: "env", // Virtual environment yang dibuat di direktori utama
         path: ".", // Direktori utama
         message: [
-          "python -m pip install --upgrade pip", 
-          "python -m pip install -r requirements.txt || { echo 'Invalid packages in requirements.txt'; exit 1; }",
-          "python gepeto_ai.py" // Menjalankan aplikasi utama
+          "python -m pip install --upgrade pip",
+          "python -m pip install -r requirements.txt",
         ],
+      },
+    },
+    {
+      method: "shell.run",
+      params: {
+        venv: "env",
+        path: ".",
+        message: "python gepeto_ai.py",
       },
     },
   ],
