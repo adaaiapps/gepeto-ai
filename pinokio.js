@@ -18,8 +18,9 @@ module.exports = {
       // display html button
       return [{
         icon: "fa-solid fa-rocket",
-        text: "Gepeto",
-        href: "start.js"
+        text: "GepetoAI",
+        href: "start.js",
+        default: true
       }, {
         icon: "fa-solid fa-plug",
         text: "Update",
