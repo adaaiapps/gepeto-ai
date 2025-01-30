@@ -1,28 +1,22 @@
+const path = require('path')
 module.exports = {
   version: "2.0",
-  title: "Gepeto",
+  title: "gepeto",
   description: "Generate Pinokio Launchers, Instantly. https://gepeto.pinokio.computer",
   icon: "icon.jpeg",
   menu: async (kernel, info) => {
-    let running = info.running("start.js")
-    if (running) {
-      // display html button
-      // display start.js button
+    let installed = info.exists("app/env")
+    if (installed) {
       return [{
-        icon: 'fa-solid fa-terminal',
-        text: "Terminal",
+        icon: "fa-solid fa-power-off",
+        text: "Start",
         href: "start.js",
       }]
     } else {
-      // display html button
       return [{
-        icon: "fa-solid fa-rocket",
-        text: "Gepeto",
-        href: "start.js",
-      }, {
         icon: "fa-solid fa-plug",
-        text: "Update",
-        href: "update.js"
+        text: "Install",
+        href: "install.js",
       }]
     }
   }
