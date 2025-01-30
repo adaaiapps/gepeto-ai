@@ -12,12 +12,12 @@ class JsonOutputParser(BaseOutputParser):
         except json.JSONDecodeError:
             return None
 
-ENVIRONMENT_FILE = "ENVIRONMENT"
+ENVIRONMENT_FILE = "_ENVIRONMENT"
 
 def load_environment_variables():
     env_vars = {}
-    if os.path.exists(ENVIRONMENT_FILE):
-        with open(ENVIRONMENT_FILE, "r") as f:
+    if os.path.exists(_ENVIRONMENT_FILE):
+        with open(_ENVIRONMENT_FILE, "r") as f:
             for line in f:
                 line = line.strip()
                 if line and not line.startswith("#") and "=" in line:
@@ -171,15 +171,15 @@ def main():
     icon_url = env_vars.get("ICON_URL")
     
     if not git_url:
-        print("GIT_URL tidak ditemukan di file ENVIRONMENT. Pastikan untuk menyetel variabel lingkungan sebelum menjalankan script.")
+        print("GIT_URL tidak ditemukan di file _ENVIRONMENT. Pastikan untuk menyetel variabel lingkungan sebelum menjalankan script.")
         return
 
     if not api_key:
-        print("API_KEY tidak ditemukan di file ENVIRONMENT. Pastikan untuk menyetel variabel lingkungan sebelum menjalankan script.")
+        print("API_KEY tidak ditemukan di file _ENVIRONMENT. Pastikan untuk menyetel variabel lingkungan sebelum menjalankan script.")
         return
 
     if not llm_type:
-        print("LLM_TYPE tidak ditemukan di file ENVIRONMENT. Pastikan untuk menyetel variabel lingkungan sebelum menjalankan script.")
+        print("LLM_TYPE tidak ditemukan di file _ENVIRONMENT. Pastikan untuk menyetel variabel lingkungan sebelum menjalankan script.")
         return
 
     try:
