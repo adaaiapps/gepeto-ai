@@ -2,4 +2,4 @@ python-dotenv
 langchain
 openai
 anthropic
-langchain_community
+langchain-community==0.7.0
