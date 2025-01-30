@@ -1,6 +1,0 @@
-GIT_URL=your_repository_url
-API_KEY=your_api_key
-LLM_TYPE=openai  # (opsional, default: openai)
-PINOKIO_HOME=/path/to/pinokio/home  # (opsional, default: /PINOKIO_HOME)
-PROJECT_NAME=
-ICON_URL=

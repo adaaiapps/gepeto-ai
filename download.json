@@ -1,0 +1,9 @@
+{
+    "run": [{
+      "method": "fs.download",
+      "params": {
+        "uri": "{{env.SD_INSTALL_CHECKPOINT}}",
+        "dir": "app/models/Stable-diffusion"
+      }
+    }]
+  }
