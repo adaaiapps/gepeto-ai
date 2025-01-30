@@ -5,19 +5,14 @@ from langchain_community.chat_models import ChatOpenAI, ChatAnthropic, ChatGoogl
 from langchain.prompts import ChatPromptTemplate
 from langchain.schema import BaseOutputParser
 
-# Nama file konfigurasi
-CONFIG_FILE = "config.json"
+class JsonOutputParser(BaseOutputParser):
+    def parse(self, text: str):
+        try:
+            return json.loads(text)
+        except json.JSONDecodeError:
+            return None
+
 ENVIRONMENT_FILE = "ENVIRONMENT"
-
-def load_config():
-    if os.path.exists(CONFIG_FILE):
-        with open(CONFIG_FILE, "r") as f:
-            return json.load(f)
-    return {}
-
-def save_config(data):
-    with open(CONFIG_FILE, "w") as f:
-        json.dump(data, f, indent=4)
 
 def load_environment_variables():
     env_vars = {}
@@ -32,46 +27,46 @@ def load_environment_variables():
 
 def analyze_repo(repo_url, api_key, llm_type):
     try:
-        # Clone the repository
+        # Kloning repositori
         repo_name = repo_url.split("/")[-1].replace(".git", "")
         subprocess.run(["git", "clone", repo_url, repo_name], check=True, capture_output=True, text=True)
         repo_path = os.path.abspath(repo_name)
 
-        # Read README.md
+        # Membaca README.md
         readme_path = os.path.join(repo_path, "README.md")
         readme_content = ""
         if os.path.exists(readme_path):
             with open(readme_path, "r", encoding="utf-8") as f:
                 readme_content = f.read()
 
-        # Read requirements.txt
+        # Membaca requirements.txt
         requirements_path = os.path.join(repo_path, "requirements.txt")
         requirements_content = ""
         if os.path.exists(requirements_path):
             with open(requirements_path, "r", encoding="utf-8") as f:
                 requirements_content = f.read()
 
-        # Read package.json
+        # Membaca package.json
         package_path = os.path.join(repo_path, "package.json")
         package_content = ""
         if os.path.exists(package_path):
             with open(package_path, "r", encoding="utf-8") as f:
                 package_content = f.read()
 
-        # Tentukan file config.json untuk menyimpan URL secara permanen
+        # Menyimpan URL repositori ke config.json
         config_path = os.path.join(os.getcwd(), "config.json")
         config_data = {"last_repo_url": repo_url}
         with open(config_path, "w") as f:
             json.dump(config_data, f, indent=4)
 
-        # Read documentation file
+        # Membaca file dokumentasi
         docs_path = os.path.join(os.path.dirname(__file__), "ada_docs.md")
         docs_content = ""
         if os.path.exists(docs_path):
             with open(docs_path, "r", encoding="utf-8") as f:
                 docs_content = f.read()
 
-        # Pilih model LLM berdasarkan variabel lingkungan Pinokio
+        # Memilih model LLM berdasarkan variabel lingkungan
         if llm_type == "openai":
             llm = ChatOpenAI(
                 openai_api_key=api_key,
@@ -91,26 +86,29 @@ def analyze_repo(repo_url, api_key, llm_type):
                 temperature=0.2,
             )
         else:
-            raise ValueError(f"Invalid LLM type: {llm_type}")
+            raise ValueError(f"Jenis LLM tidak valid: {llm_type}")
 
+        # Membuat prompt untuk analisis
         prompt = ChatPromptTemplate.from_messages([ 
             ("system", f"""
-                You are an expert in analyzing GitHub repositories and generating Pinokio scripts.
+                Anda adalah seorang ahli dalam menganalisis repositori GitHub dan menghasilkan skrip Pinokio.
                 {docs_content}
-                Analyze the provided repository information and extract the following:
-                - Programming language (e.g., Python, Node.js, etc.)
-                - Dependencies (e.g., pip packages, npm packages)
-                - Command to run the app
-                - Any special instructions from README.md
-                Return the result in JSON format.
+                Analisis informasi repositori yang diberikan dan ekstrak hal-hal berikut:
+                - Bahasa pemrograman (misalnya Python, Node.js, dll.)
+                - Ketergantungan (misalnya paket pip, npm, dll.)
+                - Perintah untuk menjalankan aplikasi
+                - Instruksi khusus dari README.md
+                Kembalikan hasil dalam format JSON.
             """),
-            ("user", """
-                Repository URL: {repo_url}
+            ("user", f"""
+                URL Repositori: {repo_url}
                 README.md: {readme_content}
                 requirements.txt: {requirements_content}
                 package.json: {package_content}
             """)
         ])
+
+        # Membuat rantai proses
         chain = prompt | llm | JsonOutputParser()
         result = chain.invoke({
             "repo_url": repo_url,
@@ -118,12 +116,14 @@ def analyze_repo(repo_url, api_key, llm_type):
             "requirements_content": requirements_content,
             "package_content": package_content,
         })
+
         return result
+
     except subprocess.CalledProcessError as e:
-        print(f"Error cloning repository: {e.stderr}")
+        print(f"Kesalahan saat mengkloning repositori: {e.stderr}")
         return None
     except Exception as e:
-        print(f"Error analyzing repository: {e}")
+        print(f"Kesalahan saat menganalisis repositori: {e}")
         return None
 
 def generate_pinokio_scripts(repo_data):
@@ -134,12 +134,15 @@ def generate_pinokio_scripts(repo_data):
         repo_name = repo_data.get("repo_name", "app")
         repo_url = repo_data.get("repo_url", "")
 
+        # Menentukan direktori template berdasarkan ketergantungan
         template_dir = "template1" if "torch" not in dependencies else "template2"
 
+        # Membaca file skrip template
         install_script = open(f"{template_dir}/install.js", "r").read()
         start_script = open(f"{template_dir}/start.js", "r").read()
         pinokio_script = open(f"{template_dir}/pinokio.js", "r").read()
 
+        # Mengganti placeholder dengan nilai sesuai repositori
         install_script = install_script.replace("<GIT_REPOSITORY>", repo_url)
         install_script = install_script.replace("<INSTALL_FILE>", "requirements.txt" if language == "Python" else "package.json")
         start_script = start_script.replace("<START_FILE>", run_command)
@@ -154,8 +157,9 @@ def generate_pinokio_scripts(repo_data):
         }
 
         return scripts
+
     except Exception as e:
-        raise Exception(f"Error generating Pinokio scripts: {e}")
+        raise Exception(f"Kesalahan saat menghasilkan skrip Pinokio: {e}")
 
 def main():
     config = load_config()
@@ -163,17 +167,19 @@ def main():
     git_url = env_vars.get("GIT_URL")
     api_key = env_vars.get("API_KEY")
     llm_type = env_vars.get("LLM_TYPE")
+    project_name = env_vars.get("PROJECT_NAME")
+    icon_url = env_vars.get("ICON_URL")
     
     if not git_url:
-        print("Error: GIT_URL is not defined in ENVIRONMENT file. Please set the variable before running the script.")
+        print("GIT_URL tidak ditemukan di file ENVIRONMENT. Pastikan untuk menyetel variabel lingkungan sebelum menjalankan script.")
         return
 
     if not api_key:
-        print("Error: API_KEY is not defined in ENVIRONMENT file. Please set the variable before running the script.")
+        print("API_KEY tidak ditemukan di file ENVIRONMENT. Pastikan untuk menyetel variabel lingkungan sebelum menjalankan script.")
         return
 
     if not llm_type:
-        print("Error: LLM_TYPE is not defined in ENVIRONMENT file. Please set the variable before running the script.")
+        print("LLM_TYPE tidak ditemukan di file ENVIRONMENT. Pastikan untuk menyetel variabel lingkungan sebelum menjalankan script.")
         return
 
     try:
@@ -182,15 +188,15 @@ def main():
             pinokio_scripts = generate_pinokio_scripts(repo_data)
             print("Skrip Pinokio berhasil dibuat:")
 
-            # Tentukan lokasi Pinokio Home
+            # Menentukan lokasi Pinokio Home
             pinokio_home = os.getenv("PINOKIO_HOME", "/PINOKIO_HOME")
-            app_name = "generated_app"
+            app_name = project_name if project_name else "generated_app"
             app_folder = os.path.join(pinokio_home, "api", app_name)
 
-            # Buat folder aplikasi
+            # Membuat folder aplikasi
             os.makedirs(app_folder, exist_ok=True)
 
-            # Simpan setiap file hasil di folder aplikasi
+            # Menyimpan setiap file hasil di folder aplikasi
             for filename, content in pinokio_scripts.items():
                 print(f"\n{filename}:\n{content}")
                 with open(os.path.join(app_folder, filename), "w") as f:
@@ -198,16 +204,19 @@ def main():
 
             print(f"\nSkrip Pinokio disimpan di folder: {app_folder}")
 
-            # Periksa keberadaan pinokio.js
+            # Memeriksa keberadaan pinokio.js
             if "pinokio.js" not in pinokio_scripts:
                 print("\nPerhatian: Tidak ada file pinokio.js yang dihasilkan. Menambahkan file pinokio.js default...")
-                default_pinokio_js = """
-module.exports = {
-  "run": [ {
+                default_pinokio_js = f"""
+module.exports = {{
+  "run": [ {{
     "method": "script.start",
-    "params": { "uri": "start.js" }
-  }]
-}
+    "params": {{ "uri": "start.js" }}
+  }},
+  "title": "{app_name}",
+  "icon": "{icon_url if icon_url else 'icon.png'}"
+  ]
+}}
 """
                 with open(os.path.join(app_folder, "pinokio.js"), "w") as f:
                     f.write(default_pinokio_js)

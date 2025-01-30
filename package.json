@@ -12,12 +12,10 @@
   "author": "Angga Riyansyah",
   "license": "MIT",
   "dependencies": {
-    "isomorphic-git": "^1.25.7",
     "kleur": "^4.1.5",
-    "prompts": "^2.4.2",
-    "yargs": "^17.7.2",
     "langchain": "^0.1.10",
     "openai": "^4.24.1",
-    "anthropic": "*"
+    "anthropic": "*",
+    "langchain-google-genai": "*"
   }
 }

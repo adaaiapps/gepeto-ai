@@ -167,6 +167,8 @@ def main():
     git_url = env_vars.get("GIT_URL")
     api_key = env_vars.get("API_KEY")
     llm_type = env_vars.get("LLM_TYPE")
+    project_name = env_vars.get("PROJECT_NAME")
+    icon_url = env_vars.get("ICON_URL")
     
     if not git_url:
         print("GIT_URL tidak ditemukan di file ENVIRONMENT. Pastikan untuk menyetel variabel lingkungan sebelum menjalankan script.")
@@ -188,7 +190,7 @@ def main():
 
             # Menentukan lokasi Pinokio Home
             pinokio_home = os.getenv("PINOKIO_HOME", "/PINOKIO_HOME")
-            app_name = "generated_app"
+            app_name = project_name if project_name else "generated_app"
             app_folder = os.path.join(pinokio_home, "api", app_name)
 
             # Membuat folder aplikasi
@@ -205,13 +207,15 @@ def main():
             # Memeriksa keberadaan pinokio.js
             if "pinokio.js" not in pinokio_scripts:
                 print("\nPerhatian: Tidak ada file pinokio.js yang dihasilkan. Menambahkan file pinokio.js default...")
-                default_pinokio_js = """
-module.exports = {
-  "run": [ {
+                default_pinokio_js = f"""
+module.exports = {{
+  "run": [ {{
     "method": "script.start",
-    "params": { "uri": "start.js" }
-  }]
-}
+    "params": {{ "uri": "start.js" }}
+  }}],
+  "title": "{app_name}",
+  "icon": "{icon_url if icon_url else 'icon.png'}"
+}}
 """
                 with open(os.path.join(app_folder, "pinokio.js"), "w") as f:
                     f.write(default_pinokio_js)
