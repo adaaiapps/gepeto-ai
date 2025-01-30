@@ -1,5 +1,7 @@
+langchain-community
+langchain-google-genai
+langchain-openai
+langchain-anthropic
 python-dotenv
-langchain
-openai
-anthropic
-langchain-community==0.3.16
+google-generativeai
+
