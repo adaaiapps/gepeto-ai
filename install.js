@@ -24,7 +24,7 @@ module.exports = {
     {
       method: "notify",
       params: {
-        html: "Instalasi selesai! Klik tombol 'Start' untuk memulai."
+        html: "Instalasi selesai! Aplikasi akan dimulai secara otomatis."
       }
     }
   ],
