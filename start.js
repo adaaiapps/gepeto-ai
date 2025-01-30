@@ -1,23 +1,39 @@
 const path = require('path');
+const fs = require('fs');
 
 module.exports = {
   daemon: true,
   run: [
-    // Langkah 1: Jalankan backend
+    // Langkah 1: Cari file python utama
     {
       method: "shell.run",
       params: {
         message: [
-          "python {{env.PROJECT_NAME ? env.PROJECT_NAME : 'app'}}.py",
+          "ls app"
+        ],
+      },
+    },
+    {
+      method: "local.set",
+      params: {
+        main_py: "{{input.stdout.split('\\n').find(file => file.endsWith('.py')) || 'app.py'}}"
+      }
+    },
+    // Langkah 2: Jalankan backend
+    {
+      method: "shell.run",
+      params: {
+        message: [
+          "python {{local.main_py}}",
         ],
         path: "app",
         on: [{
-          "event": "/Gepeto is up and running/i",
+          "event": "/Devika is up and running/i",
           "done": true
         }]
       }
     },
-    // Langkah 2: Jalankan frontend
+    // Langkah 3: Jalankan frontend
     {
       method: "shell.run",
       params: {
@@ -26,7 +42,7 @@ module.exports = {
         on: [{ "event": "/http:\/\/\\S+/", "done": true }]
       }
     },
-    // Langkah 3: Setel variabel lokal 'url'
+    // Langkah 4: Setel variabel lokal 'url'
     {
       method: "local.set",
       params: {
