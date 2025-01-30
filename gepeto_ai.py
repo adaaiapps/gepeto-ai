@@ -7,6 +7,7 @@ from langchain.schema import BaseOutputParser
 
 # Nama file konfigurasi
 CONFIG_FILE = "config.json"
+ENVIRONMENT_FILE = "ENVIRONMENT"
 
 def load_config():
     if os.path.exists(CONFIG_FILE):
@@ -18,7 +19,18 @@ def save_config(data):
     with open(CONFIG_FILE, "w") as f:
         json.dump(data, f, indent=4)
 
-def analyze_repo(repo_url):
+def load_environment_variables():
+    env_vars = {}
+    if os.path.exists(ENVIRONMENT_FILE):
+        with open(ENVIRONMENT_FILE, "r") as f:
+            for line in f:
+                line = line.strip()
+                if line and not line.startswith("#") and "=" in line:
+                    key, value = line.split("=", 1)
+                    env_vars[key.strip()] = value.strip()
+    return env_vars
+
+def analyze_repo(repo_url, api_key, llm_type):
     try:
         # Clone the repository
         repo_name = repo_url.split("/")[-1].replace(".git", "")
@@ -60,9 +72,6 @@ def analyze_repo(repo_url):
                 docs_content = f.read()
 
         # Pilih model LLM berdasarkan variabel lingkungan Pinokio
-        llm_type = os.getenv("LLM_TYPE", "openai")
-        api_key = os.getenv("API_KEY")
-
         if llm_type == "openai":
             llm = ChatOpenAI(
                 openai_api_key=api_key,
@@ -150,24 +159,25 @@ def generate_pinokio_scripts(repo_data):
 
 def main():
     config = load_config()
-    git_url = os.getenv("GIT_URL")
-    api_key = os.getenv("API_KEY")
-    llm_type = os.getenv("LLM_TYPE")
+    env_vars = load_environment_variables()
+    git_url = env_vars.get("GIT_URL")
+    api_key = env_vars.get("API_KEY")
+    llm_type = env_vars.get("LLM_TYPE")
     
     if not git_url:
-        print("GIT_URL tidak ditemukan di variabel lingkungan. Pastikan untuk menyetel variabel lingkungan sebelum menjalankan script.")
+        print("GIT_URL tidak ditemukan di file ENVIRONMENT. Pastikan untuk menyetel variabel lingkungan sebelum menjalankan script.")
         return
 
     if not api_key:
-        print("API_KEY tidak ditemukan di variabel lingkungan. Pastikan untuk menyetel variabel lingkungan sebelum menjalankan script.")
+        print("API_KEY tidak ditemukan di file ENVIRONMENT. Pastikan untuk menyetel variabel lingkungan sebelum menjalankan script.")
         return
 
     if not llm_type:
-        print("LLM_TYPE tidak ditemukan di variabel lingkungan. Pastikan untuk menyetel variabel lingkungan sebelum menjalankan script.")
+        print("LLM_TYPE tidak ditemukan di file ENVIRONMENT. Pastikan untuk menyetel variabel lingkungan sebelum menjalankan script.")
         return
 
     try:
-        repo_data = analyze_repo(git_url)
+        repo_data = analyze_repo(git_url, api_key, llm_type)
         if repo_data:
             pinokio_scripts = generate_pinokio_scripts(repo_data)
             print("Skrip Pinokio berhasil dibuat:")

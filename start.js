@@ -5,12 +5,12 @@ const fs = require('fs');
 module.exports = {
   daemon: true,
   run: [
-    // Membaca variabel lingkungan dari file _ENVIRONMENT
+    // Membaca variabel lingkungan dari file ENVIRONMENT
     {
       method: "shell.run",
       params: {
         message: [
-          "source _ENVIRONMENT"
+          "source ENVIRONMENT"
         ],
       },
     },

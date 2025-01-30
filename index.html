@@ -81,14 +81,14 @@ document.querySelector("form").addEventListener("submit", async (e) => {
   params.set("api_key", document.querySelector("#api_key").value);
   params.set("llm_type", document.querySelector("#llm_type").value);
 
-  // Fetch the existing _ENVIRONMENT content
-  const response = await fetch("_ENVIRONMENT");
+  // Fetch the existing ENVIRONMENT content
+  const response = await fetch("ENVIRONMENT");
   let envContent = "";
   if (response.ok) {
     envContent = await response.text();
   }
 
-  // Update or add the new values to the _ENVIRONMENT content
+  // Update or add the new values to the ENVIRONMENT content
   let newEnvContent = envContent;
   params.forEach((value, key) => {
     const regex = new RegExp(`^${key}=.*$`, 'm');
@@ -99,8 +99,8 @@ document.querySelector("form").addEventListener("submit", async (e) => {
     }
   });
 
-  // Write the updated content back to _ENVIRONMENT
-  await fetch("_ENVIRONMENT", {
+  // Write the updated content back to ENVIRONMENT
+  await fetch("ENVIRONMENT", {
     method: "PUT",
     body: newEnvContent,
   });
