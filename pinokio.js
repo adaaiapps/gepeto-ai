@@ -10,10 +10,6 @@ module.exports = {
       // display html button
       // display start.js button
       return [{
-        icon: "fa-solid fa-rocket",
-        text: "Gepeto",
-        href: "index.html?raw=true"
-      }, {
         icon: 'fa-solid fa-terminal',
         text: "Terminal",
         href: "start.js",
@@ -23,7 +19,7 @@ module.exports = {
       return [{
         icon: "fa-solid fa-rocket",
         text: "Gepeto",
-        href: "index.html?raw=true"
+        href: "start.js"
       }, {
         icon: "fa-solid fa-plug",
         text: "Update",
