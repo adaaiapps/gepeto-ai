@@ -30,7 +30,7 @@ module.exports = {
       params: {
         path: ".", // Direktori utama proyek
         message: [
-          "env\\Scripts\\activate" // Untuk Windows
+          "{{platform === 'win32' ? 'call env\\\\Scripts\\\\activate' : 'source env/bin/activate'}}"
         ],
       },
     },
