@@ -4,6 +4,7 @@ module.exports = {
   title: "gepeto",
   description: "Generate Pinokio Launchers, Instantly. https://gepeto.pinokio.computer",
   icon: "icon.jpeg",
+  start: "start.js",
   menu: async (kernel, info) => {
     let running = info.running("start.js")
     if (running) {
@@ -16,12 +17,7 @@ module.exports = {
       }]
     } else {
       // display html button
-      return [{
-        icon: "fa-solid fa-rocket",
-        text: "GepetoAI",
-        href: "start.js",
-        default: true
-      }, {
+      return [ {
         icon: "fa-solid fa-plug",
         text: "Update",
         href: "update.js"
