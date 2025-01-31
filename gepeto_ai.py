@@ -1,11 +1,23 @@
 import os
 import json
 import subprocess
+import sys
 from dotenv import load_dotenv
 from langchain_community.chat_models import ChatOpenAI, ChatAnthropic
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.prompts import ChatPromptTemplate
 from langchain.schema import BaseOutputParser
+
+# Pastikan path environment benar
+sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "env", "Lib", "site-packages")))
+
+# Load file _ENVIRONMENT
+ENVIRONMENT_FILE = "_ENVIRONMENT"
+if os.path.exists(ENVIRONMENT_FILE):
+    load_dotenv(ENVIRONMENT_FILE)
+else:
+    print(f"⚠️ File {ENVIRONMENT_FILE} tidak ditemukan. Pastikan file ini ada.")
+    sys.exit(1)
 
 class JsonOutputParser(BaseOutputParser):
     def parse(self, text: str):
@@ -14,11 +26,8 @@ class JsonOutputParser(BaseOutputParser):
         except json.JSONDecodeError:
             return None
 
-# Load file environment
-ENVIRONMENT_FILE = "_ENVIRONMENT"
-load_dotenv(ENVIRONMENT_FILE)  # Pastikan file ini terbaca
-
 def load_environment_variables():
+    """Membaca variabel dari file _ENVIRONMENT dan memasukkannya ke dalam os.environ"""
     env_vars = {}
     if os.path.exists(ENVIRONMENT_FILE):
         with open(ENVIRONMENT_FILE, "r") as f:
@@ -27,15 +36,19 @@ def load_environment_variables():
                 if line and not line.startswith("#") and "=" in line:
                     key, value = line.split("=", 1)
                     env_vars[key.strip()] = value.strip()
-                    os.environ[key.strip()] = value.strip()  # Tambahkan ke environment sistem
+                    os.environ[key.strip()] = value.strip()
     return env_vars
 
 def analyze_repo(repo_url, api_key, llm_type):
     try:
-        # Clone repo jika belum ada
         repo_name = repo_url.split("/")[-1].replace(".git", "")
+
+        # Clone repo jika belum ada
         if not os.path.exists(repo_name):
+            print(f"📥 Mengkloning repository {repo_url} ...")
             subprocess.run(["git", "clone", repo_url, repo_name], check=True)
+        else:
+            print(f"✅ Repository {repo_name} sudah ada, melewati cloning.")
 
         repo_path = os.path.abspath(repo_name)
 
@@ -75,7 +88,7 @@ def analyze_repo(repo_url, api_key, llm_type):
         elif llm_type == "google":
             llm = ChatGoogleGenerativeAI(google_api_key=api_key, model="gemini-pro", temperature=0.2)
         else:
-            raise ValueError(f"Jenis LLM tidak valid: {llm_type}")
+            raise ValueError(f"🚨 Jenis LLM tidak valid: {llm_type}")
 
         # Buat prompt
         prompt = ChatPromptTemplate.from_messages([
@@ -109,10 +122,10 @@ def analyze_repo(repo_url, api_key, llm_type):
         return result
 
     except subprocess.CalledProcessError as e:
-        print(f"Kesalahan saat cloning repo: {e}")
+        print(f"❌ Kesalahan saat cloning repo: {e}")
         return None
     except Exception as e:
-        print(f"Kesalahan analisis repo: {e}")
+        print(f"❌ Kesalahan analisis repo: {e}")
         return None
 
 def main():
@@ -122,14 +135,17 @@ def main():
     llm_type = env_vars.get("LLM_TYPE")
 
     if not git_url or not api_key or not llm_type:
-        print("Pastikan GIT_URL, API_KEY, dan LLM_TYPE sudah diatur di _ENVIRONMENT.")
+        print("❌ Pastikan GIT_URL, API_KEY, dan LLM_TYPE sudah diatur di _ENVIRONMENT.")
         return
 
     try:
         repo_data = analyze_repo(git_url, api_key, llm_type)
-        print("Hasil Analisis Repo:", json.dumps(repo_data, indent=4))
+        if repo_data:
+            print("✅ Hasil Analisis Repo:", json.dumps(repo_data, indent=4))
+        else:
+            print("⚠️ Gagal menganalisis repositori.")
     except Exception as e:
-        print(f"Terjadi kesalahan: {e}")
+        print(f"❌ Terjadi kesalahan: {e}")
 
 if __name__ == "__main__":
     main()
