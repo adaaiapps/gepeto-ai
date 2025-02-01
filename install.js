@@ -17,10 +17,10 @@ const { EventEmitter } = require('events');
           method: "shell.run",
           params: {
             path: ".",
-            message: [
+             message: [
               "conda deactivate",
-              "for /f \"delims=\" %a in ('where py') do set SYSTEM_PYTHON=%a",
-              "%SYSTEM_PYTHON% -m pip install python-dotenv"
+              "if [[ \"${os}\" == \"Windows_NT\" ]]; then set SYSTEM_PYTHON_PATH=$(cmd /c where py); else SYSTEM_PYTHON_PATH=$(which python); fi",
+              "%SYSTEM_PYTHON_PATH% -m pip install python-dotenv"
             ]
           }
         },
