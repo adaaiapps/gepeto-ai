@@ -15,7 +15,7 @@ const { EventEmitter } = require('events');
         },
         {
           method: "shell.run",
-          params: {
+           params: {
             path: ".",
             message: [
               "conda deactivate",

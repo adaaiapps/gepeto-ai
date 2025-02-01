@@ -10,8 +10,8 @@ const { exec } = require('child_process');
           params: {
             message: [
               "conda deactivate",
-              "SYSTEM_PYTHON=$(if [[ \"${os}\" == \"Windows_NT\" ]]; then where python; else which python; fi)",
-              "$SYSTEM_PYTHON gepeto_ai.py"
+              "for /f \"delims=\" %a in ('where python') do set SYSTEM_PYTHON=%a",
+              "%SYSTEM_PYTHON% gepeto_ai.py"
             ],
             env: {
               GIT_URL: process.env.GIT_URL,
