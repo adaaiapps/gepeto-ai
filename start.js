@@ -41,9 +41,9 @@ try {
           env: {
             GIT_URL: process.env.GIT_URL || "",
             API_KEY: process.env.API_KEY || "",
-            LLM_TYPE: process.env.LLM_TYPE || "openai",
+            LLM_TYPE: process.env.LLM_TYPE || "",
             PINOKIO_HOME: process.env.PINOKIO_HOME || "/PINOKIO_HOME",
-            PROJECT_NAME: process.env.PROJECT_NAME || "Default Project Name",
+            PROJECT_NAME: process.env.PROJECT_NAME || "",
             ICON_URL: process.env.ICON_URL || ""
           }
         }

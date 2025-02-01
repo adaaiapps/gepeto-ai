@@ -11,8 +11,8 @@ from langchain.schema import BaseOutputParser
 # 🔹 Pastikan path environment benar
 sys.path.insert(0, os.path.abspath(os.path.join(os.getcwd(), "env", "Lib", "site-packages")))
 
-# 🔹 Load file _ENVIRONMENT
-ENVIRONMENT_FILE = "_ENVIRONMENT"
+# 🔹 Load file ENVIRONMENT
+ENVIRONMENT_FILE = "ENVIRONMENT"
 if os.path.exists(ENVIRONMENT_FILE):
     load_dotenv(ENVIRONMENT_FILE)
 else:
@@ -27,7 +27,7 @@ class JsonOutputParser(BaseOutputParser):
             return None
 
 def load_environment_variables():
-    """Membaca variabel dari file _ENVIRONMENT dan memasukkannya ke dalam os.environ"""
+    """Membaca variabel dari file ENVIRONMENT dan memasukkannya ke dalam os.environ"""
     env_vars = {}
     if os.path.exists(ENVIRONMENT_FILE):
         with open(ENVIRONMENT_FILE, "r") as f:
@@ -135,13 +135,13 @@ def main():
     llm_type = env_vars.get("LLM_TYPE")
 
     if not git_url:
-        print("❌ GIT_URL tidak diatur di _ENVIRONMENT.")
+        print("❌ GIT_URL tidak diatur di ENVIRONMENT.")
         return
     if not api_key:
-        print("❌ API_KEY tidak diatur di _ENVIRONMENT.")
+        print("❌ API_KEY tidak diatur di ENVIRONMENT.")
         return
     if not llm_type:
-        print("❌ LLM_TYPE tidak diatur di _ENVIRONMENT.")
+        print("❌ LLM_TYPE tidak diatur di ENVIRONMENT.")
         return
 
     try:
