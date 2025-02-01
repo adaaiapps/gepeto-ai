@@ -19,8 +19,7 @@ const { EventEmitter } = require('events');
             path: ".",
             message: [
               "conda deactivate",
-              "SYSTEM_PYTHON=$(which python)",
-              "SYSTEM_PIP=$(which pip)",
+              "SYSTEM_PYTHON=$(if [[ \"${os}\" == \"Windows_NT\" ]]; then where python; else which python; fi)",
               "$SYSTEM_PYTHON -m pip install python-dotenv"
             ]
           }

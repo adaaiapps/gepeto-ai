@@ -10,7 +10,7 @@ const { exec } = require('child_process');
           params: {
             message: [
               "conda deactivate",
-              "SYSTEM_PYTHON=$(which python)",
+              "SYSTEM_PYTHON=$(if [[ \"${os}\" == \"Windows_NT\" ]]; then where python; else which python; fi)",
               "$SYSTEM_PYTHON gepeto_ai.py"
             ],
             env: {
