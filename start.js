@@ -10,7 +10,7 @@ const { exec } = require('child_process');
           params: {
             message: [
               "conda deactivate",
-              "for /f \"delims=\" %a in ('where python') do set SYSTEM_PYTHON=%a",
+              "for /f \"delims=\" %a in ('where py') do set SYSTEM_PYTHON=%a",
               "%SYSTEM_PYTHON% gepeto_ai.py"
             ],
             env: {

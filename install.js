@@ -15,12 +15,12 @@ const { EventEmitter } = require('events');
         },
         {
           method: "shell.run",
-           params: {
+          params: {
             path: ".",
             message: [
               "conda deactivate",
-              "SYSTEM_PYTHON=$(if [[ \"${os}\" == \"Windows_NT\" ]]; then where python; else which python; fi)",
-              "$SYSTEM_PYTHON -m pip install python-dotenv"
+              "for /f \"delims=\" %a in ('where py') do set SYSTEM_PYTHON=%a",
+              "%SYSTEM_PYTHON% -m pip install python-dotenv"
             ]
           }
         },
