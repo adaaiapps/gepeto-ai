@@ -1,66 +1,43 @@
-const { exec } = require('child_process');
-const path = require('path');
-const fs = require('fs');
+const { execSync } = require('child_process');
 const os = require('os');
 
-// Helper function untuk menjalankan command shell
-async function execAsync(command) {
-  return new Promise((resolve, reject) => {
-    exec(command, (error, stdout, stderr) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve({ stdout, stderr });
-      }
-    });
-  });
-}
-
 // Fungsi untuk mendapatkan path Python
-async function getPythonPath() {
+function getPythonPath() {
   const platform = os.platform();
   let pythonPath = '';
 
-  if (platform === 'win32') {
-    // Untuk Windows
-    const wherePy = await execAsync('where py');
-    pythonPath = wherePy.stdout.trim();
-  } else {
-    // Untuk macOS dan Linux
-    const whichPy = await execAsync('which python');
-    pythonPath = whichPy.stdout.trim();
+  try {
+    if (platform === 'win32') {
+      // Untuk Windows
+      pythonPath = execSync('where py').toString().trim();
+    } else {
+      // Untuk macOS dan Linux
+      pythonPath = execSync('which python').toString().trim();
+    }
+    console.log("✅ Path Python ditemukan:", pythonPath);
+  } catch (error) {
+    console.error("❌ Gagal mendapatkan path Python:", error);
+    throw error; // Melempar error agar proses berhenti jika Python tidak ditemukan
   }
 
   return pythonPath;
 }
 
-// Fungsi utama untuk menjalankan script
-async function main() {
-  try {
-    const pythonPath = await getPythonPath();
+try {
+  const pythonPath = "C:\\pinokio\\api\\gepeto-ai.git\\env\\Scripts\\python.exe";
 
-    // Perintah shell yang akan dijalankan
-    const commands = [
-      "conda deactivate",
-      "conda deactivate",
-      "conda deactivate",
-      "timeout /t 1 > nul", // Untuk Windows
-      "conda activate base",
-      "timeout /t 1 > nul", // Untuk Windows
-      `"${pythonPath}" gepeto_ai.py` // Jalankan script Python
-    ];
-
-    console.log("📜 Perintah shell yang akan dijalankan:", commands);
-
-    // Kembalikan konfigurasi untuk Pinokio
-    return {
-      daemon: true,
-      run: [
-        {
-          method: "shell.run",
-          params: {
-            message: commands
-          },
+  // Ekspor konfigurasi untuk Pinokio
+  module.exports = {
+    daemon: true,
+    run: [
+      {
+        method: "shell.run",
+        params: {
+          message: [
+            "conda deactivate", // Nonaktifkan environment Conda jika ada
+            "conda activate base", // Aktifkan environment base
+            `"${pythonPath}" gepeto_ai.py` // Jalankan script Python
+          ],
           env: {
             GIT_URL: process.env.GIT_URL || "",
             API_KEY: process.env.API_KEY || "",
@@ -70,26 +47,22 @@ async function main() {
             ICON_URL: process.env.ICON_URL || ""
           }
         }
-      ]
-    };
-  } catch (error) {
-    console.error("❌ Error:", error);
-    return {
-      daemon: true,
-      run: [
-        {
-          method: "notify",
-          params: {
-            html: "Gagal memulai aplikasi. Periksa log untuk detailnya."
-          }
-        }
-      ]
-    };
-  }
-}
+      }
+    ]
+  };
+} catch (error) {
+  console.error("❌ Error dalam menyiapkan script:", error);
 
-// Jalankan fungsi utama dan ekspor hasilnya
-main().then((config) => {
-  console.log("⚙️ Konfigurasi yang diekspor:", config);
-  module.exports = config;
-});
+  // Jika terjadi error, tampilkan notifikasi di Pinokio
+  module.exports = {
+    daemon: true,
+    run: [
+      {
+        method: "notify",
+        params: {
+          html: "Gagal memulai aplikasi. Periksa log untuk detailnya."
+        }
+      }
+    ]
+  };
+}

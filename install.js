@@ -5,12 +5,11 @@ module.exports = {
     {
       method: "shell.run",
       params: {
-        venv: "env",
-        venv_python: "3.11",
-        path: ".",
+        venv: "env", // Buat virtual environment (opsional)
+        path: ".",   // Path ke direktori proyek
         message: [
-          "pip install -r requirements.txt",
-          "python -m pip install python-dotenv"
+          "pip install -r requirements.txt", // Instal dependensi dari requirements.txt
+          "python -m pip install python-dotenv" // Instal python-dotenv secara manual
         ]
       }
     },

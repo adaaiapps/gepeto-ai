@@ -3,3 +3,4 @@ langchain-google-genai
 langchain-openai
 langchain-anthropic
 google-generativeai
+python-dotenv
