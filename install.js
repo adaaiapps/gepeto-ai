@@ -14,6 +14,15 @@ module.exports = {
       }
     },
     {
+      method: "shell.run",
+      params: {
+        path: ".",
+        message: [
+          "pip install python-dotenv"
+        ]
+      }
+    },
+    {
       method: "notify",
       params: {
         html: "Instalasi selesai! Klik tombol Start untuk memulai."
